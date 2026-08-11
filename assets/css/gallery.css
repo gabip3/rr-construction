@@ -24,28 +24,30 @@ html { scroll-padding-top: calc(78px + 4.5rem); }
   .gal-head { padding-top: calc(var(--header-h) + clamp(3rem, 7vw, 6rem)); }
 }
 
+/* The gallery is a symmetrical page: everything is centred on one
+   axis, so the asymmetric grid of photographs below is the only thing
+   doing the composing. */
 .gal-head__inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: clamp(1.5rem, 5vw, 5rem);
-  align-items: start;
+  max-width: 52rem;
+  margin-inline: auto;
+  text-align: center;
 }
 
-.gal-head__title {
-  font-size: var(--fs-h2);
-  max-width: 14ch;
-}
+.gal-head__title { font-size: var(--fs-h2); }
 
 .gal-head__body {
-  max-width: 44ch;
-  padding-top: clamp(0.5rem, 2.5vw, 1.75rem);
+  max-width: 48ch;
+  margin-inline: auto;
+  margin-top: clamp(1.25rem, 3vw, 1.75rem);
 }
-.gal-head__body .rule { margin-bottom: var(--sp-3); }
 .gal-head__body p { color: var(--ink-soft); }
 
-@media (max-width: 900px) {
-  .gal-head__inner { grid-template-columns: 1fr; }
-  .gal-head__body { padding-top: 0; }
+/* Short centred rule. The draw animation opens from the middle rather
+   than the left, which is what the base --rule token does. */
+.gal-head__body .rule {
+  width: 64px;
+  margin: 0 auto var(--sp-3);
+  transform-origin: center;
 }
 
 
@@ -68,6 +70,7 @@ html { scroll-padding-top: calc(78px + 4.5rem); }
 .gal-index ul {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0 clamp(1.25rem, 3vw, 2.5rem);
   padding-block: 0.9rem;
 }
@@ -122,21 +125,17 @@ html { scroll-padding-top: calc(78px + 4.5rem); }
 .gal-group--alt { background: var(--bg-alt); }
 
 .gal-group__head {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: var(--sp-2) clamp(1.5rem, 4vw, 5rem);
-  align-items: end;
+  max-width: 52rem;
+  margin-inline: auto;
   margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  text-align: center;
 }
 .gal-group__title { font-size: var(--fs-h2); }
 .gal-group__note {
-  max-width: 42ch;
-  padding-bottom: 0.4rem;
+  max-width: 46ch;
+  margin-inline: auto;
+  margin-top: var(--sp-2);
   color: var(--ink-soft);
-}
-
-@media (max-width: 800px) {
-  .gal-group__head { grid-template-columns: 1fr; }
 }
 
 
