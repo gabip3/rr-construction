@@ -1,0 +1,388 @@
+/* ============================================================
+   Gallery page: page head, jump index, grouped grids, lightbox.
+   Loads after sections.css and only adds; it overrides nothing.
+   ============================================================ */
+
+
+/* ------------------------------------------------------------
+   Page head
+   ------------------------------------------------------------ */
+
+/* This page's header is condensed from the start (78px), so both the
+   first section and the sticky index offset against that rather than
+   the taller resting header height. */
+html { scroll-padding-top: calc(78px + 4.5rem); }
+
+.gal-head {
+  background: var(--bg);
+  padding-top: calc(78px + clamp(3rem, 7vw, 6rem));
+  padding-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+
+@media (max-width: 960px) {
+  html { scroll-padding-top: calc(var(--header-h) + 4.5rem); }
+  .gal-head { padding-top: calc(var(--header-h) + clamp(3rem, 7vw, 6rem)); }
+}
+
+.gal-head__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 5vw, 5rem);
+  align-items: start;
+}
+
+.gal-head__title {
+  font-size: var(--fs-h2);
+  max-width: 14ch;
+}
+
+.gal-head__body {
+  max-width: 44ch;
+  padding-top: clamp(0.5rem, 2.5vw, 1.75rem);
+}
+.gal-head__body .rule { margin-bottom: var(--sp-3); }
+.gal-head__body p { color: var(--ink-soft); }
+
+@media (max-width: 900px) {
+  .gal-head__inner { grid-template-columns: 1fr; }
+  .gal-head__body { padding-top: 0; }
+}
+
+
+/* ------------------------------------------------------------
+   Jump index
+   ------------------------------------------------------------ */
+
+.gal-index {
+  position: sticky;
+  top: 78px;
+  z-index: 40;
+  background: var(--bg);
+  border-block: 1px solid var(--line);
+}
+
+@media (max-width: 960px) {
+  .gal-index { top: var(--header-h); }
+}
+
+.gal-index ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 clamp(1.25rem, 3vw, 2.5rem);
+  padding-block: 0.9rem;
+}
+
+.gal-index a {
+  position: relative;
+  display: inline-block;
+  padding-block: 0.25rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  transition: color var(--dur-fast) var(--ease-soft);
+}
+.gal-index a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--c-gold);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+.gal-index a:hover,
+.gal-index a:focus-visible { color: var(--ink); }
+.gal-index a:hover::after,
+.gal-index a:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+@media (max-width: 700px) {
+  .gal-index {
+    position: static;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+  .gal-index ul { flex-wrap: nowrap; }
+  .gal-index a { white-space: nowrap; }
+}
+
+
+/* ------------------------------------------------------------
+   Groups
+   ------------------------------------------------------------ */
+
+.gal-group { background: var(--bg); }
+.gal-group--alt { background: var(--bg-alt); }
+
+.gal-group__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--sp-2) clamp(1.5rem, 4vw, 5rem);
+  align-items: end;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+.gal-group__title { font-size: var(--fs-h2); }
+.gal-group__note {
+  max-width: 42ch;
+  padding-bottom: 0.4rem;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 800px) {
+  .gal-group__head { grid-template-columns: 1fr; }
+}
+
+
+/* ------------------------------------------------------------
+   Grid
+
+   Column masonry rather than a row grid. The photographs are a mix
+   of portrait and landscape, and a fixed-ratio grid crops the
+   verticals badly and leaves holes wherever the spans do not tile.
+   Here every photograph keeps its own proportions and nothing is
+   cut. Tiles are buttons: the whole photograph opens the viewer.
+   ------------------------------------------------------------ */
+
+.gal-grid {
+  column-count: 3;
+  column-gap: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.gal-item {
+  break-inside: avoid;
+  margin-bottom: clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.gal-tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--c-gray);
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+.gal-tile img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: scale 700ms var(--ease-out);
+}
+
+/* Gold hairline frame draws in on hover */
+.gal-tile::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--c-gold);
+  opacity: 0;
+  transition: opacity var(--dur-mid) var(--ease-soft);
+  pointer-events: none;
+}
+
+.gal-tile:hover img,
+.gal-tile:focus-visible img { scale: 1.035; }
+.gal-tile:hover::after,
+.gal-tile:focus-visible::after { opacity: 1; }
+
+.gal-tile:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.gal-tile__tag {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 0.45rem 0.8rem;
+  background: rgba(36, 36, 38, 0.86);
+  color: var(--ink-on-dark);
+  font-family: var(--font-body);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+@media (max-width: 900px) {
+  .gal-grid { column-count: 2; }
+}
+
+
+/* ------------------------------------------------------------
+   Closing CTA aside
+   ------------------------------------------------------------ */
+
+.gal-cta__aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-on-dark);
+}
+.gal-cta__note {
+  max-width: 32ch;
+  font-size: var(--fs-sm);
+  color: var(--ink-on-dark-soft);
+}
+
+
+/* ------------------------------------------------------------
+   Lightbox
+   ------------------------------------------------------------ */
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+}
+.lightbox[hidden] { display: none; }
+
+.lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 20, 22, 0.94);
+  cursor: zoom-out;
+}
+
+.lightbox__stage {
+  position: relative;
+  z-index: 1;
+  width: min(100% - 2rem, 78rem);
+  max-height: 100svh;
+  padding: clamp(3.5rem, 8vh, 5rem) 0;
+  display: grid;
+  place-items: center;
+}
+
+.lightbox__figure {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  align-items: center;
+  max-height: 100%;
+}
+
+.lightbox__img {
+  max-width: 100%;
+  max-height: calc(100svh - 12rem);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  background: var(--c-charcoal);
+}
+
+.lightbox__caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.4rem clamp(1rem, 3vw, 2rem);
+  text-align: center;
+}
+.lightbox__group {
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--c-gold-rich);
+}
+.lightbox__text {
+  max-width: 56ch;
+  font-size: 0.95rem;
+  color: var(--ink-on-dark-soft);
+}
+.lightbox__count {
+  font-size: var(--fs-xs);
+  letter-spacing: var(--ls-wide);
+  color: var(--ink-on-dark-mute);
+}
+
+/* Controls: square, hairline, no circles */
+.lightbox__btn {
+  position: absolute;
+  z-index: 2;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-on-dark);
+  background: rgba(36, 36, 38, 0.7);
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease-soft),
+              background var(--dur-fast) var(--ease-soft);
+}
+.lightbox__btn:hover,
+.lightbox__btn:focus-visible {
+  border-color: var(--c-gold-rich);
+  background: rgba(36, 36, 38, 0.95);
+}
+.lightbox__btn:focus-visible {
+  outline: 2px solid var(--c-gold-rich);
+  outline-offset: 3px;
+}
+
+.lightbox__btn--close { top: 1rem; right: 1rem; }
+.lightbox__btn--prev  { left: 1rem;  top: 50%; translate: 0 -50%; }
+.lightbox__btn--next  { right: 1rem; top: 50%; translate: 0 -50%; }
+
+/* Chevrons and cross drawn from borders, so there are no icon files */
+.lightbox__btn--prev span,
+.lightbox__btn--next span {
+  width: 11px;
+  height: 11px;
+  border-top: 1px solid var(--ink-on-dark);
+  border-right: 1px solid var(--ink-on-dark);
+}
+.lightbox__btn--prev span { rotate: -135deg; translate: 2px 0; }
+.lightbox__btn--next span { rotate: 45deg; translate: -2px 0; }
+
+.lightbox__btn--close span {
+  position: relative;
+  width: 15px;
+  height: 15px;
+}
+.lightbox__btn--close span::before,
+.lightbox__btn--close span::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--ink-on-dark);
+}
+.lightbox__btn--close span::before { rotate: 45deg; }
+.lightbox__btn--close span::after { rotate: -45deg; }
+
+.js .lightbox__img { opacity: 0; transition: opacity var(--dur-mid) var(--ease-soft); }
+.js .lightbox.is-ready .lightbox__img { opacity: 1; }
+
+body.lightbox-open { overflow: hidden; }
+
+@media (max-width: 700px) {
+  .lightbox__btn { width: 44px; height: 44px; }
+  .lightbox__btn--prev { left: 0.5rem; }
+  .lightbox__btn--next { right: 0.5rem; }
+  .lightbox__btn--close { top: 0.5rem; right: 0.5rem; }
+  .lightbox__img { max-height: calc(100svh - 14rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .lightbox__img { opacity: 1; }
+}

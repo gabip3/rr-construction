@@ -1,0 +1,757 @@
+/* ============================================================
+   Reusable components: brand lockup, buttons, links, rules,
+   header + navigation, form fields, before/after comparison.
+   ============================================================ */
+
+
+/* ------------------------------------------------------------
+   Intro
+
+   The loading bar is the same dimension line the rest of the site
+   uses: hairline, end ticks, and a gold tick that travels to the
+   right as it fills. "Measure twice" is what the wait is for.
+   ------------------------------------------------------------ */
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  background: var(--c-white);
+
+  /* Failsafe: if main.js never runs, the overlay still clears itself
+     rather than sitting on top of the site forever. */
+  animation: intro-failsafe 0s linear 6s forwards;
+}
+
+/* No script, no intro. The inline head script sets .js synchronously,
+   so this never flashes for anyone. */
+html:not(.js) .intro { display: none; }
+
+.intro.is-done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 550ms var(--ease-soft), visibility 0s linear 550ms;
+}
+
+@keyframes intro-failsafe {
+  to { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+
+body.intro-open { overflow: hidden; }
+
+.intro__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.5rem, 4vh, 2.5rem);
+  padding: var(--gutter);
+}
+
+/* Staggered entrance. The line starts invisible, which also hides the
+   moment JavaScript swaps in the randomly chosen phrase. */
+.intro__logo,
+.intro__line,
+.intro__rule { animation: intro-in 700ms var(--ease-out) both; }
+.intro__line { animation-delay: 140ms; }
+.intro__rule { animation-delay: 260ms; }
+
+@keyframes intro-in {
+  from { opacity: 0; translate: 0 10px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+.intro__logo {
+  width: auto;
+  height: clamp(5.5rem, 14vh, 8.5rem);
+}
+
+.intro__line {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.5rem);
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  text-align: center;
+}
+
+.intro__rule {
+  position: relative;
+  width: min(240px, 56vw);
+  height: 1px;
+  background: var(--line-strong);
+}
+/* End ticks, like a dimension line on a drawing */
+.intro__rule::before,
+.intro__rule::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  width: 1px;
+  height: 9px;
+  background: var(--line-strong);
+}
+.intro__rule::before { left: 0; }
+.intro__rule::after { right: 0; }
+
+.intro__fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 1px;
+  background: var(--c-gold);
+  /* Slow enough that the bar is visibly travelling for the whole read */
+  transition: width 2100ms var(--ease-out);
+}
+/* Travelling tick at the leading edge */
+.intro__fill::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -4px;
+  width: 1px;
+  height: 9px;
+  background: var(--c-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro { display: none; }
+}
+
+
+/* ------------------------------------------------------------
+   Brand lockup
+
+   Redrawn from the master logo: black gable with a gold inner
+   roofline, chimney with a gold cap, and the four-pane window.
+   The wordmark keeps the logo's letterspaced serif "CONSTRUCTION"
+   and the gold ampersand.
+   ------------------------------------------------------------ */
+
+.logo { display: block; }
+
+.logo img {
+  width: auto;
+  height: 5rem;
+  transition: height var(--dur-mid) var(--ease-soft);
+}
+
+/* The header condenses on scroll so the lockup can be generous at rest */
+.site-header.is-scrolled .site-header__inner { height: 78px; }
+.site-header.is-scrolled .logo img { height: 3.7rem; }
+
+/* Footer: same lockup, light variant */
+.logo--stacked img {
+  width: clamp(9.5rem, 13vw, 12rem);
+  height: auto;
+}
+
+@media (max-width: 960px) {
+  .logo img,
+  .site-header.is-scrolled .logo img { height: 3.9rem; }
+  .site-header.is-scrolled .site-header__inner { height: var(--header-h); }
+}
+
+@media (max-width: 400px) {
+  .logo img,
+  .site-header.is-scrolled .logo img { height: 3.6rem; }
+}
+
+
+/* ------------------------------------------------------------
+   Buttons: square corners, gold sweeps in from the left
+   ------------------------------------------------------------ */
+
+.btn {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 1.85rem;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color var(--dur-mid) var(--ease-soft),
+    border-color var(--dur-mid) var(--ease-soft);
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--c-gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+
+.btn:hover::before,
+.btn:focus-visible::before { transform: scaleX(1); }
+
+.btn:active { translate: 0 1px; }
+
+/* Comfortable tap targets on touch-sized viewports */
+@media (max-width: 640px) {
+  .btn { padding-block: 1.1rem; }
+  .link-arrow { padding-block: 0.6rem; }
+}
+
+/* Solid: black block, sweeps to gold */
+.btn--solid {
+  background: var(--c-black);
+  border-color: var(--c-black);
+  color: var(--c-white);
+}
+.btn--solid:hover,
+.btn--solid:focus-visible {
+  color: var(--c-black);
+  border-color: var(--c-gold);
+}
+
+/* Ghost: hairline outline, sweeps to gold */
+.btn--ghost {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+.btn--ghost:hover,
+.btn--ghost:focus-visible {
+  color: var(--c-black);
+  border-color: var(--c-gold);
+}
+
+/* Gold: already gold, so it sweeps to black */
+.btn--gold {
+  background: var(--c-gold);
+  border-color: var(--c-gold);
+  color: var(--c-black);
+}
+.btn--gold::before { background: var(--c-black); }
+.btn--gold:hover,
+.btn--gold:focus-visible {
+  color: var(--c-white);
+  border-color: var(--c-black);
+}
+
+/* Gold hairline outline, for the secondary action on a dark section */
+.btn--outline-gold {
+  border-color: var(--c-gold);
+  color: var(--c-gold-rich);
+}
+.btn--outline-gold:hover,
+.btn--outline-gold:focus-visible { color: var(--c-black); }
+
+
+/* ------------------------------------------------------------
+   Text link with a gold measure line that extends on hover
+   ------------------------------------------------------------ */
+
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: color var(--dur-mid) var(--ease-soft);
+}
+
+.link-arrow::before {
+  content: "";
+  width: 26px;
+  height: 1px;
+  background: var(--c-gold);
+  transition: width var(--dur-mid) var(--ease-out);
+}
+
+.link-arrow:hover,
+.link-arrow:focus-visible { color: var(--c-gold-deep); }
+.link-arrow:hover::before,
+.link-arrow:focus-visible::before { width: 46px; }
+
+
+/* ------------------------------------------------------------
+   Gold rules
+   ------------------------------------------------------------ */
+
+.rule {
+  width: 100%;
+  max-width: 100%;
+}
+.rule--short { width: 64px; }
+
+
+/* ------------------------------------------------------------
+   Header + navigation
+   ------------------------------------------------------------ */
+
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 100;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition:
+    background var(--dur-mid) var(--ease-soft),
+    border-color var(--dur-mid) var(--ease-soft);
+}
+
+.site-header.is-scrolled {
+  background: var(--c-white);
+  border-bottom-color: var(--line);
+}
+
+.site-header__inner {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  transition: height var(--dur-mid) var(--ease-soft);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.4rem, 2.4vw, 2.6rem);
+}
+
+.nav__list {
+  display: flex;
+  align-items: center;
+  gap: clamp(1.3rem, 2.2vw, 2.3rem);
+}
+
+.nav__link {
+  position: relative;
+  display: inline-block;
+  padding-block: 0.35rem;
+  font-size: 0.92rem;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+  color: var(--ink);
+  transition: color var(--dur-fast) var(--ease-soft);
+}
+
+.nav__link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--c-gold);
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform var(--dur-mid) var(--ease-out);
+}
+
+.nav__link:hover::after,
+.nav__link:focus-visible::after,
+.nav__link.is-current::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+.nav__link.is-current { color: var(--c-gold-deep); }
+
+.nav__reach { display: none; }
+
+.nav__phone {
+  font-size: 0.92rem;
+  font-weight: 400;
+  white-space: nowrap;
+  color: var(--ink-soft);
+  transition: color var(--dur-fast) var(--ease-soft);
+}
+.nav__phone:hover { color: var(--c-gold-deep); }
+
+.nav__phone--sms {
+  position: relative;
+  margin-left: 0.9rem;
+  padding-left: 0.9rem;
+  color: var(--c-gold-deep);
+  font-weight: 500;
+}
+.nav__phone--sms::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  width: 1px;
+  height: 1em;
+  background: var(--line-strong);
+}
+
+@media (min-width: 1240px) {
+  .nav__reach { display: inline-block; }
+}
+
+.nav__cta { padding: 0.85rem 1.5rem; }
+
+/* Mobile trigger: a plain three-bar hamburger that folds into an X */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-right: -12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.nav-toggle__bars {
+  display: grid;
+  gap: 6px;
+  width: 26px;
+}
+.nav-toggle__bars i {
+  display: block;
+  height: 2px;
+  background: var(--ink);
+  transition: transform var(--dur-mid) var(--ease-out),
+              opacity var(--dur-fast) linear;
+}
+
+[data-nav-toggle][aria-expanded="true"] .nav-toggle__bars i:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+[data-nav-toggle][aria-expanded="true"] .nav-toggle__bars i:nth-child(2) {
+  opacity: 0;
+}
+[data-nav-toggle][aria-expanded="true"] .nav-toggle__bars i:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+@media (max-width: 960px) {
+
+  .nav-toggle { display: inline-flex; }
+
+  .nav {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: var(--sp-6);
+    padding: calc(var(--header-h) + var(--sp-6)) var(--gutter) var(--sp-8);
+    background: var(--c-white);
+    opacity: 0;
+    visibility: hidden;
+    /* visibility flips discretely at the end of the fade rather than
+       being animated, which also stops the panel flashing when the
+       viewport crosses this breakpoint on a resize. */
+    transition: opacity var(--dur-mid) var(--ease-soft),
+                visibility 0s linear var(--dur-mid);
+  }
+
+  .nav.is-open {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--dur-mid) var(--ease-soft),
+                visibility 0s linear 0s;
+  }
+
+  .nav__list {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    width: 100%;
+  }
+
+  .nav__list li {
+    width: 100%;
+    border-top: 1px solid var(--line);
+    opacity: 0;
+    translate: 0 12px;
+    transition: opacity 420ms var(--ease-out), translate 420ms var(--ease-out);
+  }
+  .nav__list li:last-child { border-bottom: 1px solid var(--line); }
+
+  .nav.is-open .nav__list li { opacity: 1; translate: 0 0; }
+  .nav.is-open .nav__list li:nth-child(1) { transition-delay: 80ms; }
+  .nav.is-open .nav__list li:nth-child(2) { transition-delay: 130ms; }
+  .nav.is-open .nav__list li:nth-child(3) { transition-delay: 180ms; }
+  .nav.is-open .nav__list li:nth-child(4) { transition-delay: 230ms; }
+  .nav.is-open .nav__list li:nth-child(5) { transition-delay: 280ms; }
+
+  .nav__link {
+    display: block;
+    padding-block: 1rem;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    letter-spacing: var(--ls-display);
+  }
+  .nav__link::after { display: none; }
+
+  .nav__reach {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+  .nav__phone {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--c-gold-deep);
+  }
+  .nav__phone--sms {
+    margin-left: 0;
+    padding-left: 0;
+  }
+  .nav__phone--sms::before { display: none; }
+
+  .nav__cta { align-self: stretch; }
+}
+
+body.nav-open { overflow: hidden; }
+
+
+/* ------------------------------------------------------------
+   Form fields
+   ------------------------------------------------------------ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field label {
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  color: var(--ink-on-dark-soft);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 0.7rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--line-on-dark);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink-on-dark);
+  font-size: 0.95rem;
+  font-weight: 300;
+  transition: border-color var(--dur-mid) var(--ease-soft);
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 3.5rem;
+  line-height: 1.6;
+}
+
+.field input::placeholder,
+.field textarea::placeholder { color: var(--ink-on-dark-mute); }
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover { border-bottom-color: var(--ink-on-dark-mute); }
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--c-gold-rich);
+}
+
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
+  outline: none;
+  border-bottom-width: 2px;
+  border-bottom-color: var(--c-gold-rich);
+}
+
+.field select {
+  appearance: none;
+  padding-right: 1.75rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23E7A900' stroke-width='1.4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0 center;
+}
+.field select option {
+  background: var(--c-charcoal);
+  color: var(--ink-on-dark);
+}
+
+.field--invalid input,
+.field--invalid select,
+.field--invalid textarea { border-bottom-color: #E0705A; }
+
+.field__error {
+  font-size: var(--fs-xs);
+  color: #F0A092;
+}
+
+
+/* ------------------------------------------------------------
+   Before / after comparison
+   The handle reads as a plumb line dropped through the photograph.
+   ------------------------------------------------------------ */
+
+.compare { position: relative; }
+
+/* --ratio is set per pair on the element, so each comparison keeps the
+   framing its own photographs were shot in. */
+.compare__frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--ratio, 16 / 10);
+  background: var(--c-gray);
+  touch-action: pan-y;
+  user-select: none;
+  cursor: ew-resize;
+}
+
+.compare__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.compare__img--before {
+  clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+}
+
+.compare__tag {
+  position: absolute;
+  bottom: 1.1rem;
+  z-index: 3;
+  padding: 0.45rem 0.85rem;
+  background: rgba(36, 36, 38, 0.86);
+  color: var(--ink-on-dark);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: var(--ls-label);
+  text-transform: uppercase;
+  pointer-events: none;
+}
+.compare__tag--before { left: 1.1rem; }
+.compare__tag--after  { right: 1.1rem; }
+
+.compare__handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--pos);
+  z-index: 4;
+  width: 44px;
+  translate: -50% 0;
+  display: grid;
+  place-items: center;
+  cursor: ew-resize;
+  touch-action: none;
+}
+
+/* The line itself */
+.compare__handle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  translate: -50% 0;
+  background: var(--c-gold-rich);
+}
+
+/* Square knob, with two gold ticks reading as a drag affordance */
+.compare__knob {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  background: var(--c-black);
+  border: 1px solid var(--c-gold-rich);
+  transition: scale var(--dur-mid) var(--ease-out);
+}
+.compare__knob::before,
+.compare__knob::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 1px;
+  height: 12px;
+  translate: 0 -50%;
+  background: var(--c-gold-rich);
+}
+.compare__knob::before { left: 13px; }
+.compare__knob::after  { left: 19px; }
+
+.compare__handle:hover .compare__knob,
+.compare__handle:focus-visible .compare__knob { scale: 1.12; }
+
+.compare__handle:focus-visible { outline: none; }
+.compare__handle:focus-visible .compare__knob {
+  outline: 2px solid var(--c-gold-rich);
+  outline-offset: 4px;
+}
+
+.compare.is-dragging .compare__img--before,
+.compare.is-dragging .compare__handle { transition: none; }
+
+/* Caption sits under each comparison: story on the left, facts right */
+.compare__caption {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--sp-3) clamp(2rem, 5vw, 4.5rem);
+  align-items: start;
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--line-strong);
+}
+.compare__caption h3 {
+  font-size: var(--fs-h4);
+  margin-bottom: 0.5rem;
+}
+.compare__caption p {
+  max-width: 62ch;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.compare__hint {
+  margin-top: var(--sp-4);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.02em;
+  color: var(--ink-mute);
+}
+
+@media (max-width: 760px) {
+  .compare__caption { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .compare__frame { aspect-ratio: 4 / 3; }
+  .compare__tag { bottom: 0.7rem; padding: 0.35rem 0.6rem; }
+  .compare__tag--before { left: 0.7rem; }
+  .compare__tag--after  { right: 0.7rem; }
+}

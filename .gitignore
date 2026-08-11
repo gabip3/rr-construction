@@ -1,0 +1,17 @@
+# Source photography and logo masters.
+# The web versions the site actually uses live in assets/img/ and are
+# committed. These originals total ~15 MB, are not referenced anywhere,
+# and stay on the local machine.
+Fotos RR/
+LOGO RR*.png
+*.zip
+
+# Tooling
+.claude/
+node_modules/
+
+# OS cruft
+Thumbs.db
+ehthumbs.db
+desktop.ini
+.DS_Store

@@ -1,0 +1,222 @@
+/* ============================================================
+   Base: reset, document typography, layout primitives,
+   accessibility and the shared reveal system.
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 1.5rem);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: 300;
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: var(--lh-heading);
+  letter-spacing: var(--ls-display);
+  text-wrap: balance;
+}
+
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+figure { margin: 0; }
+dl, dd, dt { margin: 0; }
+address { font-style: normal; }
+
+img, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--c-gold);
+  color: var(--c-black);
+}
+
+/* ---------- Focus ---------- */
+
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-off);
+}
+
+/* Gold-on-light fails contrast, so dark surfaces get the bright ring. */
+.site-footer :focus-visible,
+.standards :focus-visible,
+.contact :focus-visible {
+  outline-color: var(--c-gold-rich);
+}
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 200;
+  translate: -50% -120%;
+  padding: 0.85rem 1.5rem;
+  background: var(--c-black);
+  color: var(--ink-on-dark);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--ls-wide);
+  text-transform: uppercase;
+  transition: translate var(--dur-mid) var(--ease-out);
+}
+.skip-link:focus-visible { translate: -50% 0; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Layout primitives ---------- */
+
+.container {
+  width: 100%;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+}
+
+/* Sections that bleed to the viewport edge do not use negative margins.
+   They are full-width grids with a --edge margin track on the side that
+   stays put; see tokens.css. Negative-margin bleeds (`50% - 50vw`) are
+   wrong on a grid item, where percentage margins resolve against the
+   grid area rather than the container. */
+
+/* Photograph that fills a box sized by its container rather than by
+   its own intrinsic ratio. Absolute positioning keeps the image out
+   of the parent's content-sizing, which otherwise creates a cyclic
+   percentage-height loop and doubles the box. */
+.fill-figure { position: relative; }
+.fill-figure > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Shared reveal system ----------
+   Text lifts 18px, gold rules draw from the left, photographs wipe
+   up out of a clip while the image settles back from a slight scale.
+
+   These use keyframe animations rather than transitions on purpose:
+   components below own their own `transition` shorthands for hover
+   states, and a transition-based reveal would be cancelled by them.
+
+   Everything is visible by default. The `.js` class is set by an
+   inline script in <head>, so the hidden start state only exists
+   when there is JavaScript to reveal it again. */
+
+.js [data-reveal] { opacity: 0; }
+.js [data-reveal].is-in {
+  animation: reveal-up var(--dur-slow) var(--ease-out) var(--reveal-delay, 0ms) both;
+}
+
+[data-reveal-delay="1"] { --reveal-delay: 90ms; }
+[data-reveal-delay="2"] { --reveal-delay: 180ms; }
+[data-reveal-delay="3"] { --reveal-delay: 270ms; }
+
+[data-rule] {
+  display: block;
+  height: 1px;
+  background: var(--line-gold);
+}
+.js [data-rule] { transform: scaleX(0); }
+.js [data-rule].is-in {
+  animation: rule-draw var(--dur-slow) var(--ease-out) both;
+}
+
+[data-reveal-image] { overflow: hidden; }
+.js [data-reveal-image] { clip-path: inset(0 0 100% 0); }
+.js [data-reveal-image].is-in {
+  animation: image-wipe 1.05s var(--ease-out) both;
+}
+
+/* The settle scale sits on the frame, never on the <img> itself, so a
+   hover zoom on the image has a property of its own to animate. */
+.js [data-reveal-image] > img,
+.js [data-reveal-image] > .project__frame { scale: 1.05; }
+
+.js [data-reveal-image].is-in > img,
+.js [data-reveal-image].is-in > .project__frame {
+  animation: settle 1.2s var(--ease-out) both;
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; translate: 0 18px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+@keyframes rule-draw {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes rule-draw-y {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+@keyframes image-wipe {
+  from { clip-path: inset(0 0 100% 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes settle {
+  from { scale: 1.05; }
+  to   { scale: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .js [data-reveal] { opacity: 1; }
+  .js [data-rule] { transform: none; }
+  .js [data-reveal-image] { clip-path: none; }
+  .js [data-reveal-image] > img,
+  .js [data-reveal-image] > .project__frame { scale: 1; }
+}
