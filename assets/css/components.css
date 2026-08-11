@@ -258,13 +258,13 @@ body.intro-open { overflow: hidden; }
 
 
 /* ------------------------------------------------------------
-   Text link with a gold measure line that extends on hover
+   Text link marked with the four-pane window from the logo
    ------------------------------------------------------------ */
 
 .link-arrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.7rem;
   font-size: 0.76rem;
   font-weight: 500;
   letter-spacing: 0.13em;
@@ -273,18 +273,31 @@ body.intro-open { overflow: hidden; }
   transition: color var(--dur-mid) var(--ease-soft);
 }
 
+/* Four gold panes in the corners of an 11px box, leaving a 2px cross
+   of empty space between them. Drawn as four background gradients
+   rather than the cut-out cross used on the process timeline, because
+   this link sits on warm white, cream and charcoal, and a painted
+   cross would have to know its background. This one does not. */
 .link-arrow::before {
   content: "";
-  width: 26px;
-  height: 1px;
-  background: var(--c-gold);
-  transition: width var(--dur-mid) var(--ease-out);
+  flex: none;
+  width: 11px;
+  height: 11px;
+  background-image:
+    linear-gradient(var(--c-gold) 0 0),
+    linear-gradient(var(--c-gold) 0 0),
+    linear-gradient(var(--c-gold) 0 0),
+    linear-gradient(var(--c-gold) 0 0);
+  background-size: 4.5px 4.5px;
+  background-repeat: no-repeat;
+  background-position: 0 0, 100% 0, 0 100%, 100% 100%;
+  transition: scale var(--dur-mid) var(--ease-out);
 }
 
 .link-arrow:hover,
 .link-arrow:focus-visible { color: var(--c-gold-deep); }
 .link-arrow:hover::before,
-.link-arrow:focus-visible::before { width: 46px; }
+.link-arrow:focus-visible::before { scale: 1.18; }
 
 
 /* ------------------------------------------------------------
