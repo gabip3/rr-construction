@@ -509,13 +509,16 @@
 .standard:hover::after,
 .standard:focus-within::after { transform: scaleX(1); }
 
-.standard__num {
-  padding-top: 0.15rem;
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
+/* Phosphor Icons, inlined. fill="currentColor" on the path is what
+   lets them take part in the hover colour swap below. */
+.standard__icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex: none;
+  margin-top: 0.1rem;
   color: var(--c-gold-rich);
-  transition: color var(--dur-mid) var(--ease-soft);
+  transition: color var(--dur-mid) var(--ease-soft),
+              translate var(--dur-mid) var(--ease-out);
 }
 
 .standard__text h3 {
@@ -524,9 +527,12 @@
               translate var(--dur-mid) var(--ease-out);
 }
 
-/* Number and title trade colours on hover: gold goes white, white
-   goes gold. Both keep well clear of 4.5:1 on charcoal. */
-.standard:hover .standard__num { color: var(--ink-on-dark); }
+/* Icon and title trade colours on hover: gold goes white, white goes
+   gold. Both keep well clear of 4.5:1 on charcoal. */
+.standard:hover .standard__icon {
+  color: var(--ink-on-dark);
+  translate: 2px 0;
+}
 .standard:hover .standard__text h3 {
   color: var(--c-gold-rich);
   translate: 4px 0;

@@ -156,6 +156,8 @@ One extra tone exists, `--c-gold-deep` `#8A5F00`. Warm gold on a light backgroun
 
 **Radius is zero everywhere.** No pills, no glassmorphism, no gradients, no floating decoration.
 
+**"The part that isn't on the estimate" uses icons, not numbers.** The list is not a sequence, so numbering it never carried real information. Six Phosphor marks say more at a glance. It is still a hairline-separated list rather than a grid of cards, and one small icon per row keeps it restrained. On hover the icon and the title trade colours: gold goes white, white goes gold, and a gold rule draws across the row.
+
 **The hero photograph is a plate, not a backdrop.** It starts below the header rather than running behind it, lifts off the bottom edge, and stops on the same right-hand line as every other element on the page instead of running under the scrollbar. The hero grid carries a `--edge` margin track on both sides to do that. The gold measure line stops at the text column rather than crossing into the photograph, which keeps it aligned with the metadata row underneath.
 
 **About uses a finished room, not a jobsite.** "Built around the way you actually live" is about the result, so the photograph is a lived-in living room and kitchen rather than work in progress. It is cropped at `object-position: center 32%` to favour the seating and windows over the floor.
@@ -190,6 +192,16 @@ To add a third, copy a `<figure class="compare" data-compare>` block and set `--
 - Tap targets on touch viewports are at least 48px.
 
 ---
+
+## Third party
+
+**Fonts.** Libre Baskerville and Poppins, served from Google Fonts. The only external request the site makes.
+
+**Icons.** The six marks in "The part that isn't on the estimate" are [Phosphor Icons](https://phosphoricons.com) (regular weight), by Helena Zhang and Tobias Fried, used under the MIT licence.
+
+They are **inlined as SVG in `index.html`**, not pulled from a CDN and not loaded as an icon font. That keeps the page free of runtime dependencies, avoids a render-blocking request for six small shapes, and lets each icon inherit `currentColor` so it can take part in the hover swap. To change one, copy the path from the Phosphor site and replace the `<path>` inside the matching `<svg class="standard__icon">`; keep `fill="currentColor"` or it will stop reacting to hover.
+
+The icons in use are `shield-check`, `chat-teardrop-text`, `list-checks`, `house-line`, `ruler` and `calendar-check`.
 
 ## Browser support
 
