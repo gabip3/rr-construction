@@ -149,15 +149,18 @@ body.intro-open { overflow: hidden; }
   height: auto;
 }
 
+/* On touch sizes the lockup does not shrink on scroll either. There is
+   only one thing in the bar besides the menu button, so it gets the
+   room. */
 @media (max-width: 960px) {
   .logo img,
-  .site-header.is-scrolled .logo img { height: 3.9rem; }
+  .site-header.is-scrolled .logo img { height: 5.4rem; }
   .site-header.is-scrolled .site-header__inner { height: var(--header-h); }
 }
 
 @media (max-width: 400px) {
   .logo img,
-  .site-header.is-scrolled .logo img { height: 3.6rem; }
+  .site-header.is-scrolled .logo img { height: 4.9rem; }
 }
 
 

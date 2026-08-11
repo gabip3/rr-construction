@@ -118,9 +118,8 @@
   --focus-off:  3px;
 }
 
-@media (max-width: 960px) {
-  :root { --header-h: 84px; }
-}
+/* The bar keeps its full height on touch sizes: there is no room to
+   condense a stacked lockup and still have it read. */
 @media (max-width: 400px) {
-  :root { --header-h: 80px; }
+  :root { --header-h: 98px; }
 }
