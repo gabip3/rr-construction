@@ -700,7 +700,10 @@ body.nav-open { overflow: hidden; }
   background: var(--c-gold-rich);
 }
 
-/* Square knob, with two gold ticks reading as a drag affordance */
+/* Square knob carrying the four-pane window from the logo. It replaced
+   two vertical ticks, which read as a pause button. Drag is still
+   signalled by the ew-resize cursor on the whole frame and by the hint
+   under the photograph. */
 .compare__knob {
   position: relative;
   width: 34px;
@@ -709,18 +712,23 @@ body.nav-open { overflow: hidden; }
   border: 1px solid var(--c-gold-rich);
   transition: scale var(--dur-mid) var(--ease-out);
 }
-.compare__knob::before,
-.compare__knob::after {
+.compare__knob::before {
   content: "";
   position: absolute;
   top: 50%;
-  width: 1px;
-  height: 12px;
-  translate: 0 -50%;
-  background: var(--c-gold-rich);
+  left: 50%;
+  width: 13px;
+  height: 13px;
+  translate: -50% -50%;
+  background-image:
+    linear-gradient(var(--c-gold-rich) 0 0),
+    linear-gradient(var(--c-gold-rich) 0 0),
+    linear-gradient(var(--c-gold-rich) 0 0),
+    linear-gradient(var(--c-gold-rich) 0 0);
+  background-size: 5.5px 5.5px;
+  background-repeat: no-repeat;
+  background-position: 0 0, 100% 0, 0 100%, 100% 100%;
 }
-.compare__knob::before { left: 13px; }
-.compare__knob::after  { left: 19px; }
 
 .compare__handle:hover .compare__knob,
 .compare__handle:focus-visible .compare__knob { scale: 1.12; }
