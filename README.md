@@ -30,13 +30,13 @@ Load order matters: `tokens` → `base` → `components` → `sections` → `gal
 
 ## The gallery
 
-`gallery.html` groups 29 photographs into six sections: Kitchens, Living Rooms, Dining Rooms, Stairs & Carpentry, Flooring, Entryways & Trim. A sticky index bar jumps between them.
+`gallery.html` groups 37 photographs into seven sections: Kitchens, Bathrooms, Living Rooms, Dining Rooms, Stairs & Carpentry, Flooring, Entryways & Trim. A sticky index bar jumps between them.
 
 Finished rooms sit alongside the stages that produced them, tagged **Before** or **In progress** so nobody mistakes a framing shot for a finished one.
 
 Clicking any photograph opens a lightbox that moves within that photograph's group only. It supports arrow keys, swipe, Escape, a focus trap, and returns focus to the tile that opened it.
 
-**The layout is column masonry, not a row grid.** The set is 17 portrait and 12 landscape photographs. A fixed-ratio grid cropped the verticals into landscape boxes and left holes wherever the spans failed to tile. Masonry lets every photograph keep its own proportions, so nothing is cut and there are no gaps. Adding one needs no CSS or JavaScript change: copy an `<li class="gal-item">` block into the relevant `<ul data-lightbox-group="...">`. Keep the `width` and `height` attributes accurate, they are what reserves the right shape before the image loads.
+**The layout is column masonry, not a row grid.** The set is 24 portrait and 13 landscape photographs. A fixed-ratio grid cropped the verticals into landscape boxes and left holes wherever the spans failed to tile. Masonry lets every photograph keep its own proportions, so nothing is cut and there are no gaps. Adding one needs no CSS or JavaScript change: copy an `<li class="gal-item">` block into the relevant `<ul data-lightbox-group="...">`. Keep the `width` and `height` attributes accurate, they are what reserves the right shape before the image loads.
 
 ## The intro
 
@@ -68,18 +68,19 @@ Real photography is in. The originals live in `Fotos RR/`; web versions were res
 | --- | --- | --- |
 | `hero-hallway.jpg` | `rr.jpeg` | Hero |
 | `service-kitchen.jpg` | `RRPic (2).jpeg` | Kitchen Remodeling feature |
-| `service-carpentry.jpg` | `RR (1).jpeg` | Custom Carpentry & Trim feature |
+| `service-bathroom.jpg` | `RR Banheiro 04.jpg` | Bathroom Remodeling feature |
 | `project-greatroom.jpg` | `RR (3).jpeg` | Projects, large |
 | `project-kitchen.jpg` | `RR_Kitchen (3).jpeg` | Projects |
 | `project-flooring.jpg` | `RR (4).jpeg` | Projects |
 | `ba-fireplace-before/after.jpg` | `RRPic (13)`, `RR (6)` | Before & After, pair one |
 | `ba-dining-before/after.jpg` | `RRPic (15)`, `RRPic (17)` | Before & After, pair two |
+| `ba-bathroom-before/after.jpg` | `RR Banheiro 00 (4)`, `RR Banheiro 01` | Before & After, pair three |
 | `why-protection.jpg` | `RRPic (6).jpeg` | "The part that isn't on the estimate" |
 | `about-living.jpg` | `RRPic (7).jpeg` | About |
 
-**Three things to check.**
+Custom Carpentry & Trim held the second feature slot until real bathroom photography arrived (`RR Banheiro *`, 14 files, 9 unique after de-duplication). It moved back to the "rest of the house" list once Bathroom Remodeling took the feature slot for real, which is where the brief originally had it. `service-carpentry.jpg` stayed in use as the lead image of the Stairs & Carpentry group on the gallery page.
 
-**There are no bathroom photos in the set.** The brief called for Kitchen and Bathroom as the two photo features. Rather than show a bathroom with a placeholder, the second feature is Custom Carpentry & Trim, built around the staircase wall, which is the strongest carpentry work in the folder. Bathroom Remodeling is still first in the services list. Send bathroom photos and it swaps straight back.
+**Two things to check.**
 
 **The project locations all say "Atlanta, GA".** I don't know which neighbourhood each job was in, so I used the general service area rather than invent one. Correct these in `index.html` under each `project__place`.
 
@@ -176,7 +177,7 @@ Content is visible by default. An inline script in `<head>` adds `.js` to `<html
 
 `prefers-reduced-motion: reduce` disables all of it.
 
-**Before/after sliders.** There are two, and each is independent: its own listeners, its own state, and its own `--ratio` so a comparison keeps the framing its photographs were shot in (4:3 for the fireplace, 16:10 for the dining room; both go 4:3 on a phone). Each supports pointer drag, click-to-jump anywhere on the photo, and the keyboard: arrows move 2%, Shift+arrows and PageUp/PageDown move 10%, Home and End jump to the ends. Each is a proper `role="slider"` with live `aria-valuenow` and `aria-valuetext`.
+**Before/after sliders.** There are three, and each is independent: its own listeners, its own state, and its own `--ratio` so a comparison keeps the framing its photographs were shot in (4:3 for the fireplace, 16:10 for the dining room; both go 4:3 on a phone). The bathroom pair is portrait, so rather than crop a floor-to-ceiling shower into a landscape frame it carries a `.compare--portrait` modifier: a capped width and a 3:4 ratio that holds at every viewport, reading as a tall inset next to the two wide pairs above it. It wins over the phone-width override on specificity alone (two classes beat one), so the ratio never needs repeating inside that media query. Each pair supports pointer drag, click-to-jump anywhere on the photo, and the keyboard: arrows move 2%, Shift+arrows and PageUp/PageDown move 10%, Home and End jump to the ends. Each is a proper `role="slider"` with live `aria-valuenow` and `aria-valuetext`.
 
 To add a third, copy a `<figure class="compare" data-compare>` block and set `--ratio` on its frame. The JavaScript picks it up with no changes.
 

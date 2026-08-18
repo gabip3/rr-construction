@@ -634,6 +634,19 @@ body.nav-open { overflow: hidden; }
 
 .compare { position: relative; }
 
+/* One pair's source photographs are portrait. Rather than force them
+   into the wide frame the other pairs use, this modifier keeps its
+   own narrower width and a matching 3:4 ratio, so it reads as a tall
+   inset next to the full-width pairs instead of a stretched crop.
+   Two classes beats the single-class mobile override below on
+   specificity alone, so this wins at every width without repeating
+   the rule inside that media query. */
+.compare--portrait {
+  max-width: 26rem;
+  margin-inline: auto;
+}
+.compare--portrait .compare__frame { aspect-ratio: 3 / 4; }
+
 /* --ratio is set per pair on the element, so each comparison keeps the
    framing its own photographs were shot in. */
 .compare__frame {
