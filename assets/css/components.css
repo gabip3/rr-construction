@@ -647,6 +647,14 @@ body.nav-open { overflow: hidden; }
 }
 .compare--portrait .compare__frame { aspect-ratio: 3 / 4; }
 
+/* The caption's two-column grid (text + facts) assumes the ~1300px
+   width the wide pairs have. .compare__facts is a wrapping flex row,
+   so its max-content contribution to the `auto` column is both facts
+   laid out on one line, ~330px, which starves the 1fr text column
+   down to a sliver at this figure's 416px width. Stack instead, the
+   same treatment the base rule already uses under 760px. */
+.compare--portrait .compare__caption { grid-template-columns: 1fr; }
+
 /* --ratio is set per pair on the element, so each comparison keeps the
    framing its own photographs were shot in. */
 .compare__frame {
