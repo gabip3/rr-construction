@@ -98,13 +98,15 @@ The real logo is wired in, derived from `LOGO RR SEM FUNDO.png`. Generated asset
 | `rr-logo-light.png` | 420 × 302 | Footer. Full lockup recoloured for the black band |
 | `rr-mark.png` | 260 × 152 | Roof, chimney and R&R monogram only (spare) |
 | `rr-mark-light.png` | 260 × 152 | Same mark, recoloured for dark surfaces (spare) |
-| `og-card.png` | 1200 × 630 | Social share card |
+| `og-card.jpg` | 1200 × 630 | Social share card |
 
 Two things worth knowing:
 
 **The header is sized around the lockup.** The master logo is very vertical, roof over `R&R` over `CONSTRUCTION` over `REVIVE & REMODELING`, so the header stands at 106px and condenses to 78px once you scroll. Even so, at header scale the `REVIVE & REMODELING` line is only a few pixels tall and will not be readable. That is unavoidable with a stacked lockup in a horizontal bar. If you want a legible tagline up there, a horizontal variant from your designer is the fix; `rr-mark.png` is in the folder as a starting point.
 
 **The light variant is generated, not hand-drawn.** Low-saturation dark pixels were mapped up into the warm-white range while the gold was left untouched, so the bevel shading survives. If you have a proper light version from your designer, drop it in over `rr-logo-light.png` at the same dimensions.
+
+**The social share card composites real photography, not just the logo.** `og-card.jpg` is the fireplace after-photo (`ba-fireplace-after.jpg`) with a left-to-right charcoal gradient for legibility, the light logo, and the hero's own headline, "Atlanta homes, thoughtfully rebuilt." It is what shows up when the link is pasted into iMessage, WhatsApp, Slack or a Facebook/Twitter post. Set as `og:image` on both pages, sized 1200 × 630 (the standard Open Graph dimensions) and kept as a JPEG rather than PNG since it's photographic content, about 110KB instead of the roughly 850KB the same composition ran as a PNG. To regenerate it with a different photo or headline, the composition is a small System.Drawing script; ask and I'll rebuild it, or hand-edit the layout constants (position, font sizes) directly if you're comfortable with PowerShell.
 
 The two source PNGs at the project root (`LOGO RR COM FUNDO.png`, `LOGO RR SEM FUNDO.png`) are your masters. They total 2.3MB and are not referenced by the site, so exclude them when you deploy.
 
