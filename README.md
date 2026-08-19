@@ -15,6 +15,9 @@ npx --yes serve -l 5178 .
 ```
 index.html                  home
 gallery.html                gallery, grouped by room
+CNAME                       custom domain for GitHub Pages
+robots.txt                  allow all, points at the sitemap
+sitemap.xml                 the two pages
 assets/css/tokens.css       colour, type, spacing, motion, layout variables
 assets/css/base.css         reset, document type, layout primitives, reveal system
 assets/css/components.css   logo, buttons, links, header/nav, form fields, before-after
@@ -110,15 +113,11 @@ Two things worth knowing:
 
 The two source PNGs at the project root (`LOGO RR COM FUNDO.png`, `LOGO RR SEM FUNDO.png`) are your masters. They total 2.3MB and are not referenced by the site, so exclude them when you deploy.
 
-### 3. Paste the Web3Forms access key
+### 3. Web3Forms access key (done)
 
-The form is wired to Web3Forms and needs one value. In `index.html`, find:
+The form is wired to Web3Forms and the real access key is in place in `index.html`. Verified end to end with a real test submission: Web3Forms accepted it, the site showed the gold success message and cleared the form. Check the inbox the key was registered to for a message titled "New estimate request from the R&R Construction website" with the name "TEST SUBMISSION, please ignore" — safe to delete.
 
-```html
-<input type="hidden" name="access_key" value="PASTE-YOUR-WEB3FORMS-ACCESS-KEY-HERE">
-```
-
-Replace it with the key from [web3forms.com](https://web3forms.com). That is the only change needed; submissions arrive at whichever email you registered with.
+The `email` field is required and, since Web3Forms auto-detects a field named `email` and sets it as Reply-To, replying to that notification goes straight to the customer, not back to Web3Forms.
 
 How it behaves:
 
@@ -136,10 +135,18 @@ The `subject` and `from_name` hidden fields set how the email reads in the inbox
 - **Social links** in the footer point at `#`. Add the real Instagram, Facebook and Google Business URLs.
 - **Before & After descriptions** are written from what the photographs show. Correct any detail that is wrong.
 - **Project locations** under each gallery image all read "Atlanta, GA".
-- **`<link rel="canonical">`** in `<head>` points at a placeholder domain.
 - **Business hours** in the contact section say Monday to Saturday, 8am to 6pm.
 
 **Licensed and insured** now appears in four places: the hero metadata, item 01 of "The part that isn't on the estimate", a gold-ruled line in the footer, and the `GeneralContractor` structured data. Some states require the licence number to be shown wherever the claim is made. Worth a quick check for Georgia, and if so add it beside the footer line.
+
+### 5. Site-wide audit (done)
+
+A general sweep after going live on the real domain, checking things automated per-section testing tends to miss: SEO metadata, heading order, duplicate IDs, form labelling, internal link targets, console errors, and the two other grid layouts sharing the pattern that caused the caption bug (see below, only one was actually at risk). Two real issues turned up and are fixed:
+
+- **The homepage meta description ran 189 characters.** Google typically truncates search snippets around 155, and it was cutting off mid-word ("reliable scheduling a…"). Trimmed to 141 characters, a complete sentence either way.
+- **`robots.txt` and `sitemap.xml` didn't exist**, 404 on both. Added a minimal `robots.txt` (allow everything, point at the sitemap) and a two-URL `sitemap.xml` covering the home and gallery pages.
+
+Everything else came back clean: one `h1` per page, no heading level skips, no duplicate IDs, every image has `alt` and dimensions, every form field labelled, no broken internal links, zero console errors, both `compare--portrait` sibling risk (`.standard`'s icon column) confirmed safe rather than assumed. Social links, project locations and business hours above are still the open items.
 
 ---
 
