@@ -2,217 +2,58 @@
 
 Marketing site for R&R Construction (Revive & Remodeling), residential remodeling in Atlanta, Georgia.
 
-Static HTML, CSS and vanilla JavaScript. No build step, no framework, no runtime dependencies. Open `index.html` or serve the folder and it runs.
+Static HTML, CSS and vanilla JavaScript. No build step, no framework, no runtime dependencies.
+
+The published site lives entirely in `public/`. That folder is what GitHub Pages serves; nothing outside it is part of the live site.
 
 ```bash
-npx --yes serve -l 5178 .
+npx --yes serve -l 5178 public
 ```
 
----
-
-## Files
+## Structure
 
 ```
-index.html                  home
-gallery.html                gallery, grouped by room
-CNAME                       custom domain for GitHub Pages
-robots.txt                  allow all, points at the sitemap
-sitemap.xml                 the two pages
-assets/css/tokens.css       colour, type, spacing, motion, layout variables
-assets/css/base.css         reset, document type, layout primitives, reveal system
-assets/css/components.css   logo, buttons, links, header/nav, form fields, before-after
-assets/css/sections.css     each section, in document order
-assets/css/gallery.css      gallery page only: grids and lightbox
-assets/js/main.js           intro, reveals, header, nav, sliders, form, lightbox
-assets/img/photos/          photography used on the home page
-assets/img/gallery/         photography used only on the gallery page
-assets/img/logo/            logo variants and the social card
+public/index.html                  home
+public/gallery.html                gallery, grouped by room
+public/CNAME                       custom domain for GitHub Pages
+public/robots.txt                  allow all, points at the sitemap
+public/sitemap.xml                 the two pages
+public/assets/css/tokens.css       colour, type, spacing, motion, layout variables
+public/assets/css/base.css         reset, document type, layout primitives, reveal system
+public/assets/css/components.css   logo, buttons, links, header/nav, form fields, before-after
+public/assets/css/sections.css     each section, in document order
+public/assets/css/gallery.css      gallery page only: grids and lightbox
+public/assets/js/main.js           intro, reveals, header, nav, sliders, form, lightbox
+public/assets/img/photos/          photography used on the home page
+public/assets/img/gallery/         photography used only on the gallery page
+public/assets/img/logo/            logo variants and the social share card
 ```
 
-Load order matters: `tokens` → `base` → `components` → `sections` → `gallery`. Later files assume the earlier ones. One stylesheet and one script serve both pages; each behaviour bails out quietly when its markup is absent.
+Stylesheet load order: `tokens` → `base` → `components` → `sections` → `gallery`. One stylesheet set and one script serve both pages.
 
-## The gallery
+## Maintenance
 
-`gallery.html` groups 37 photographs into seven sections: Kitchens, Bathrooms, Living Rooms, Dining Rooms, Stairs & Carpentry, Flooring, Entryways & Trim. A sticky index bar jumps between them.
+**Swap a photo.** Drop the new file in `public/assets/img/photos/` or `public/assets/img/gallery/`, then update the `src` and the `width`/`height` attributes at each place it's used. Frames use `object-fit: cover`, so a different ratio still fills correctly, but keep the attributes accurate — they reserve layout space and stop the page shifting while images load.
 
-Finished rooms sit alongside the stages that produced them, tagged **Before** or **In progress** so nobody mistakes a framing shot for a finished one.
+**Swap the logo.** Generated files live in `public/assets/img/logo/` (`rr-logo.png`, `rr-logo-light.png` for the dark footer, plus two spare mark-only crops). Replace at the same dimensions to avoid touching CSS.
 
-Clicking any photograph opens a lightbox that moves within that photograph's group only. It supports arrow keys, swipe, Escape, a focus trap, and returns focus to the tile that opened it.
+**Web3Forms.** The estimate form's access key is the hidden `access_key` field near the bottom of `public/index.html`. The `subject` and `from_name` hidden fields control how the notification email reads. The `email` field is required and named so Web3Forms sets it as Reply-To automatically.
 
-**The layout is column masonry, not a row grid.** The set is 24 portrait and 13 landscape photographs. A fixed-ratio grid cropped the verticals into landscape boxes and left holes wherever the spans failed to tile. Masonry lets every photograph keep its own proportions, so nothing is cut and there are no gaps. Adding one needs no CSS or JavaScript change: copy an `<li class="gal-item">` block into the relevant `<ul data-lightbox-group="...">`. Keep the `width` and `height` attributes accurate, they are what reserves the right shape before the image loads.
-
-## The intro
-
-A full-screen warm white panel with the logo, a line, and a loading bar drawn as the same dimension line used across the site, complete with end ticks and a travelling gold tick.
-
-**The line is picked at random per visit** from five, all things that actually happen on a jobsite:
-
-- Letting the paint dry.
-- Still faster than a permit.
-- Sawdust settling.
-- Snapping the chalk line.
-- Measure twice.
-
-Edit the `INTRO_LINES` array near the top of `assets/js/main.js` to change them. The copy in the HTML is only the pre-JavaScript default and should stay one of the five.
-
-It shows **once per session**, so moving between the home page and the gallery does not replay it. On screen for about 3.3 seconds: the bar travels for 2.1s, holds at full for a moment, then fades over 0.55s. Loading can push that longer but never shorter, so a fast connection cannot cut the line short. A 4.5 second cap means a slow asset can never hold the site behind it.
-
-Hidden entirely for `prefers-reduced-motion`, never appears without JavaScript, and carries a CSS-only failsafe that clears it at 6 seconds even if the script never arrives. To remove it, delete the `<div class="intro">` block from both pages.
-
----
-
-## Things you need to do before this goes live
-
-### 1. Photographs (done, but read this)
-
-Real photography is in. The originals live in `Fotos RR/`; web versions were resized and re-encoded into `assets/img/photos/`. Nothing references the originals, so exclude `Fotos RR/` when you deploy.
-
-| Web file | Source | Used for |
-| --- | --- | --- |
-| `hero-hallway.jpg` | `rr.jpeg` | Hero |
-| `service-kitchen.jpg` | `RRPic (2).jpeg` | Kitchen Remodeling feature |
-| `service-bathroom.jpg` | `RR Banheiro 04.jpg` | Bathroom Remodeling feature |
-| `project-greatroom.jpg` | `RR (3).jpeg` | Projects, large |
-| `project-kitchen.jpg` | `RR_Kitchen (3).jpeg` | Projects |
-| `project-flooring.jpg` | `RR (4).jpeg` | Projects |
-| `ba-fireplace-before/after.jpg` | `RRPic (13)`, `RR (6)` | Before & After, pair one |
-| `ba-dining-before/after.jpg` | `RRPic (15)`, `RRPic (17)` | Before & After, pair two |
-| `ba-bathroom-before/after.jpg` | `RR Banheiro 00 (4)`, `RR Banheiro 01` | Before & After, pair three |
-| `why-protection.jpg` | `RRPic (6).jpeg` | "The part that isn't on the estimate" |
-| `about-living.jpg` | `RRPic (7).jpeg` | About |
-
-Custom Carpentry & Trim held the second feature slot until real bathroom photography arrived (`RR Banheiro *`, 14 files, 9 unique after de-duplication). It moved back to the "rest of the house" list once Bathroom Remodeling took the feature slot for real, which is where the brief originally had it. `service-carpentry.jpg` stayed in use as the lead image of the Stairs & Carpentry group on the gallery page.
-
-**Two things to check.**
-
-**The project locations all say "Atlanta, GA".** I don't know which neighbourhood each job was in, so I used the general service area rather than invent one. Correct these in `index.html` under each `project__place`.
-
-**The "before" in the fireplace pair has framing already started.** It is the earliest photo of that wall in the set and still shows the original brass surround and builder mantel. If a true pre-demolition shot exists, swap it in.
-
-To replace any photo, drop the new file in `assets/img/photos/` and update the `src` plus the `width`/`height` attributes in `index.html`. Every frame uses `object-fit: cover`, so a different ratio still fills correctly, but keep the attributes accurate: they reserve layout space and stop the page shifting as images load.
-
-### 2. Logo (done, but read this)
-
-The real logo is wired in, derived from `LOGO RR SEM FUNDO.png`. Generated assets live in `assets/img/logo/`:
-
-| File | Size | Used for |
-| --- | --- | --- |
-| `rr-logo.png` | 700 × 504 | Header. Full lockup, original colours |
-| `rr-logo-light.png` | 420 × 302 | Footer. Full lockup recoloured for the black band |
-| `rr-mark.png` | 260 × 152 | Roof, chimney and R&R monogram only (spare) |
-| `rr-mark-light.png` | 260 × 152 | Same mark, recoloured for dark surfaces (spare) |
-| `og-card.jpg` | 1200 × 630 | Social share card |
-
-Two things worth knowing:
-
-**The header is sized around the lockup.** The master logo is very vertical, roof over `R&R` over `CONSTRUCTION` over `REVIVE & REMODELING`, so the header stands at 106px and condenses to 78px once you scroll. Even so, at header scale the `REVIVE & REMODELING` line is only a few pixels tall and will not be readable. That is unavoidable with a stacked lockup in a horizontal bar. If you want a legible tagline up there, a horizontal variant from your designer is the fix; `rr-mark.png` is in the folder as a starting point.
-
-**The light variant is generated, not hand-drawn.** Low-saturation dark pixels were mapped up into the warm-white range while the gold was left untouched, so the bevel shading survives. If you have a proper light version from your designer, drop it in over `rr-logo-light.png` at the same dimensions.
-
-**The social share card composites real photography, not just the logo.** `og-card.jpg` is the fireplace after-photo (`ba-fireplace-after.jpg`) with a left-to-right charcoal gradient for legibility, the light logo, and the hero's own headline, "Atlanta homes, thoughtfully rebuilt." It is what shows up when the link is pasted into iMessage, WhatsApp, Slack or a Facebook/Twitter post. Set as `og:image` on both pages, sized 1200 × 630 (the standard Open Graph dimensions) and kept as a JPEG rather than PNG since it's photographic content, about 110KB instead of the roughly 850KB the same composition ran as a PNG. To regenerate it with a different photo or headline, the composition is a small System.Drawing script; ask and I'll rebuild it, or hand-edit the layout constants (position, font sizes) directly if you're comfortable with PowerShell.
-
-The two source PNGs at the project root (`LOGO RR COM FUNDO.png`, `LOGO RR SEM FUNDO.png`) are your masters. They total 2.3MB and are not referenced by the site, so exclude them when you deploy.
-
-### 3. Web3Forms access key (done)
-
-The form is wired to Web3Forms and the real access key is in place in `index.html`. Verified end to end with a real test submission: Web3Forms accepted it, the site showed the gold success message and cleared the form. Check the inbox the key was registered to for a message titled "New estimate request from the R&R Construction website" with the name "TEST SUBMISSION, please ignore" — safe to delete.
-
-The `email` field is required and, since Web3Forms auto-detects a field named `email` and sets it as Reply-To, replying to that notification goes straight to the customer, not back to Web3Forms.
-
-How it behaves:
-
-- Validates first, and only sends once every required field is valid.
-- Posts over `fetch`, so the visitor never leaves the page. Success clears the form and confirms in gold; a failure asks them to call or text and says so in red.
-- While the key is still the placeholder, submitting does **not** fire a doomed request. It tells the visitor to call or text instead. So the form is safe to publish before you have the key.
-- A hidden `botcheck` honeypot is included; Web3Forms discards anything that fills it in.
-
-The `subject` and `from_name` hidden fields set how the email reads in the inbox. Edit them if you want different wording.
-
-### 4. Fill in the placeholders below
-
-- **Testimonials** are written as examples. Replace both with real, attributed reviews. They are marked with a comment in `index.html`.
-- **The phone number must be able to receive texts.** Every contact point now offers Call and Text side by side, and the `sms:` links go to the same number as the `tel:` links. If (943) 255-2352 is a landline, the Text buttons will fail silently on the visitor's phone. Point them at a mobile or VoIP number that accepts SMS, or remove them.
-- **Social links** in the footer point at `#`. Add the real Instagram, Facebook and Google Business URLs.
-- **Before & After descriptions** are written from what the photographs show. Correct any detail that is wrong.
-- **Project locations** under each gallery image all read "Atlanta, GA".
-- **Business hours** in the contact section say Monday to Saturday, 8am to 6pm.
-
-**Licensed and insured** now appears in four places: the hero metadata, item 01 of "The part that isn't on the estimate", a gold-ruled line in the footer, and the `GeneralContractor` structured data. Some states require the licence number to be shown wherever the claim is made. Worth a quick check for Georgia, and if so add it beside the footer line.
-
-### 5. Site-wide audit (done)
-
-A general sweep after going live on the real domain, checking things automated per-section testing tends to miss: SEO metadata, heading order, duplicate IDs, form labelling, internal link targets, console errors, and the two other grid layouts sharing the pattern that caused the caption bug (see below, only one was actually at risk). Two real issues turned up and are fixed:
-
-- **The homepage meta description ran 189 characters.** Google typically truncates search snippets around 155, and it was cutting off mid-word ("reliable scheduling a…"). Trimmed to 141 characters, a complete sentence either way.
-- **`robots.txt` and `sitemap.xml` didn't exist**, 404 on both. Added a minimal `robots.txt` (allow everything, point at the sitemap) and a two-URL `sitemap.xml` covering the home and gallery pages.
-
-Everything else came back clean: one `h1` per page, no heading level skips, no duplicate IDs, every image has `alt` and dimensions, every form field labelled, no broken internal links, zero console errors, both `compare--portrait` sibling risk (`.standard`'s icon column) confirmed safe rather than assumed. Social links, project locations and business hours above are still the open items.
-
----
-
-## Design notes
-
-**Palette.** Taken from the logo: black `#242426`, charcoal `#303033`, warm gold `#D99A00`, rich gold `#E7A900`, warm white `#FAF9F6`, soft cream `#F3F0E9`, light warm gray `#E7E3DC`.
-
-One extra tone exists, `--c-gold-deep` `#8A5F00`. Warm gold on a light background only reaches 2.1:1, which fails contrast for text. The deep gold hits 5.4:1 and is used wherever gold needs to carry readable text on a light surface. Bright gold is reserved for dark backgrounds, rules, and non-text detail.
-
-**The recurring device** is a gold hairline used the way a dimension line is used on a construction drawing. It measures, separates, and in the hero it runs out of the text column and crosses 158px into the photograph. It is the only element allowed to travel across the layout, which is what keeps gold from taking over. The four-pane window from the logo reappears as the node marker on the process timeline.
-
-**Full-bleed edges are pure CSS.** Sections whose photograph runs off the viewport edge (hero, both service features, About) are full-width grids with a `--edge` margin track on the side that stays put, defined in `tokens.css`. The percentage inside `--edge` resolves against the grid's own width, which excludes the scrollbar, so bleeds land exactly on the viewport and copy stays aligned with `.container` at every width. No `100vw`, no measuring, no JavaScript. The earlier approach measured the scrollbar in JS and misaligned every bleed by half its width whenever that value went stale.
-
-**Type.** Libre Baskerville for headings, set at 400 rather than 700 at display sizes because the regular weight is more elegant large. Poppins 300 for body, which reads warmer than the 400 that most sites default to. One word in the hero headline is italic; that is the only typographic flourish on the page.
-
-**Section rhythm.** Warm white → warm white → cream → cream → charcoal → warm white → warm white → warm gray band → warm white → charcoal → black. Projects and Before/After share the cream so they read as one portfolio chapter. Charcoal appears twice, bookending the lower half.
-
-**Radius is zero everywhere.** No pills, no glassmorphism, no gradients, no floating decoration.
-
-**"The part that isn't on the estimate" uses icons, not numbers.** The list is not a sequence, so numbering it never carried real information. Six Phosphor marks say more at a glance. It is still a hairline-separated list rather than a grid of cards, and one small icon per row keeps it restrained. On hover the icon and the title trade colours: gold goes white, white goes gold, and a gold rule draws across the row.
-
-**The hero photograph is a plate, not a backdrop.** It starts below the header rather than running behind it, lifts off the bottom edge, and stops on the same right-hand line as every other element on the page instead of running under the scrollbar. The hero grid carries a `--edge` margin track on both sides to do that. The gold measure line stops at the text column rather than crossing into the photograph, which keeps it aligned with the metadata row underneath.
-
-**About uses a finished room, not a jobsite.** "Built around the way you actually live" is about the result, so the photograph is a lived-in living room and kitchen rather than work in progress. It is cropped at `object-position: center 32%` to favour the seating and windows over the floor.
-
-**Call and Text appear together everywhere.** Contact section, footer, and the header above 1240px (in the panel on mobile). Texting is how a lot of Atlanta homeowners prefer to start, so it gets equal billing rather than being buried.
-
----
-
-## Interaction and motion
-
-Text lifts 18px, gold rules draw from the left, photographs wipe up out of a clip while settling back from a 1.05 scale. Driven by one `IntersectionObserver` over four data attributes: `data-reveal`, `data-rule`, `data-reveal-image`, `data-timeline`.
-
-Reveals use keyframe **animations**, not transitions. Components own their own `transition` shorthands for hover states, and a transition-based reveal gets silently cancelled by them.
-
-Content is visible by default. An inline script in `<head>` adds `.js` to `<html>`, and only then does the hidden start state apply, so a browser that cannot run the script still sees everything. There is also a failsafe: if the observer never delivers an entry within 2.5 seconds, everything reveals anyway.
-
-`prefers-reduced-motion: reduce` disables all of it.
-
-**Before/after sliders.** There are three, and each is independent: its own listeners, its own state, and its own `--ratio` so a comparison keeps the framing its photographs were shot in (4:3 for the fireplace, 16:10 for the dining room; both go 4:3 on a phone). The bathroom pair is portrait, so rather than crop a floor-to-ceiling shower into a landscape frame it carries a `.compare--portrait` modifier: a capped width and a 3:4 ratio that holds at every viewport, reading as a tall inset next to the two wide pairs above it. It wins over the phone-width override on specificity alone (two classes beat one), so the ratio never needs repeating inside that media query. Each pair supports pointer drag, click-to-jump anywhere on the photo, and the keyboard: arrows move 2%, Shift+arrows and PageUp/PageDown move 10%, Home and End jump to the ends. Each is a proper `role="slider"` with live `aria-valuenow` and `aria-valuetext`.
-
-To add a third, copy a `<figure class="compare" data-compare>` block and set `--ratio` on its frame. The JavaScript picks it up with no changes.
-
----
+**Open items still pending on the live site** (ask if you want the current status on any of these): real testimonials in place of the two examples, real social links in the footer, the exact neighbourhood under each gallery project, and confirming the contact number accepts text messages.
 
 ## Accessibility
 
-- Every text and background pair on the page was measured; all 50 distinct combinations meet WCAG AA.
-- One `h1`, no heading level skips, every section labelled by its heading.
-- Skip link, semantic landmarks, visible gold focus rings that switch to the bright gold on dark sections.
-- Mobile nav reports `aria-expanded`, closes on Escape and on link activation, and locks body scroll while open.
-- All images carry `alt` and intrinsic dimensions; all form fields have real labels and inline errors wired with `aria-invalid`.
-- Tap targets on touch viewports are at least 48px.
-
----
+- One `h1` per page, no heading level skips, every section labelled by its heading.
+- Skip link, semantic landmarks, visible focus rings.
+- All images carry `alt` and intrinsic dimensions; all form fields have labels and inline errors.
+- Reduced-motion preference is respected throughout.
 
 ## Third party
 
-**Fonts.** Libre Baskerville and Poppins, served from Google Fonts. The only external request the site makes.
+**Fonts.** Libre Baskerville and Poppins, served from Google Fonts.
 
-**Icons.** The six marks in "The part that isn't on the estimate" are [Phosphor Icons](https://phosphoricons.com) (regular weight), by Helena Zhang and Tobias Fried, used under the MIT licence.
-
-They are **inlined as SVG in `index.html`**, not pulled from a CDN and not loaded as an icon font. That keeps the page free of runtime dependencies, avoids a render-blocking request for six small shapes, and lets each icon inherit `currentColor` so it can take part in the hover swap. To change one, copy the path from the Phosphor site and replace the `<path>` inside the matching `<svg class="standard__icon">`; keep `fill="currentColor"` or it will stop reacting to hover.
-
-The icons in use are `shield-check`, `chat-teardrop-text`, `list-checks`, `house-line`, `ruler` and `calendar-check`.
+**Icons.** The six marks on the home page are [Phosphor Icons](https://phosphoricons.com) (regular weight) by Helena Zhang and Tobias Fried, used under the MIT licence, inlined as SVG in `index.html`.
 
 ## Browser support
 
-Modern evergreen browsers. Uses CSS custom properties, `clamp()`, `aspect-ratio`, `clip-path`, `:focus-visible`, `overflow: clip`, scroll snap, `IntersectionObserver` and Pointer Events. No polyfills, and no IE support.
+Modern evergreen browsers. Uses CSS custom properties, `clamp()`, `aspect-ratio`, `clip-path`, `:focus-visible`, `IntersectionObserver` and Pointer Events. No polyfills, no IE support.
