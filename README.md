@@ -4,40 +4,40 @@ Marketing site for R&R Construction (Revive & Remodeling), residential remodelin
 
 Static HTML, CSS and vanilla JavaScript. No build step, no framework, no runtime dependencies.
 
-The published site lives entirely in `public/`. That folder is what GitHub Pages serves; nothing outside it is part of the live site.
+The published site lives entirely in `docs/`. That folder is what GitHub Pages serves; nothing outside it is part of the live site.
 
 ```bash
-npx --yes serve -l 5178 public
+npx --yes serve -l 5178 docs
 ```
 
 ## Structure
 
 ```
-public/index.html                  home
-public/gallery.html                gallery, grouped by room
-public/CNAME                       custom domain for GitHub Pages
-public/robots.txt                  allow all, points at the sitemap
-public/sitemap.xml                 the two pages
-public/assets/css/tokens.css       colour, type, spacing, motion, layout variables
-public/assets/css/base.css         reset, document type, layout primitives, reveal system
-public/assets/css/components.css   logo, buttons, links, header/nav, form fields, before-after
-public/assets/css/sections.css     each section, in document order
-public/assets/css/gallery.css      gallery page only: grids and lightbox
-public/assets/js/main.js           intro, reveals, header, nav, sliders, form, lightbox
-public/assets/img/photos/          photography used on the home page
-public/assets/img/gallery/         photography used only on the gallery page
-public/assets/img/logo/            logo variants and the social share card
+docs/index.html                  home
+docs/gallery.html                gallery, grouped by room
+docs/CNAME                       custom domain for GitHub Pages
+docs/robots.txt                  allow all, points at the sitemap
+docs/sitemap.xml                 the two pages
+docs/assets/css/tokens.css       colour, type, spacing, motion, layout variables
+docs/assets/css/base.css         reset, document type, layout primitives, reveal system
+docs/assets/css/components.css   logo, buttons, links, header/nav, form fields, before-after
+docs/assets/css/sections.css     each section, in document order
+docs/assets/css/gallery.css      gallery page only: grids and lightbox
+docs/assets/js/main.js           intro, reveals, header, nav, sliders, form, lightbox
+docs/assets/img/photos/          photography used on the home page
+docs/assets/img/gallery/         photography used only on the gallery page
+docs/assets/img/logo/            logo variants and the social share card
 ```
 
 Stylesheet load order: `tokens` → `base` → `components` → `sections` → `gallery`. One stylesheet set and one script serve both pages.
 
 ## Maintenance
 
-**Swap a photo.** Drop the new file in `public/assets/img/photos/` or `public/assets/img/gallery/`, then update the `src` and the `width`/`height` attributes at each place it's used. Frames use `object-fit: cover`, so a different ratio still fills correctly, but keep the attributes accurate — they reserve layout space and stop the page shifting while images load.
+**Swap a photo.** Drop the new file in `docs/assets/img/photos/` or `docs/assets/img/gallery/`, then update the `src` and the `width`/`height` attributes at each place it's used. Frames use `object-fit: cover`, so a different ratio still fills correctly, but keep the attributes accurate — they reserve layout space and stop the page shifting while images load.
 
-**Swap the logo.** Generated files live in `public/assets/img/logo/` (`rr-logo.png`, `rr-logo-light.png` for the dark footer, plus two spare mark-only crops). Replace at the same dimensions to avoid touching CSS.
+**Swap the logo.** Generated files live in `docs/assets/img/logo/` (`rr-logo.png`, `rr-logo-light.png` for the dark footer, plus two spare mark-only crops). Replace at the same dimensions to avoid touching CSS.
 
-**Web3Forms.** The estimate form's access key is the hidden `access_key` field near the bottom of `public/index.html`. The `subject` and `from_name` hidden fields control how the notification email reads. The `email` field is required and named so Web3Forms sets it as Reply-To automatically.
+**Web3Forms.** The estimate form's access key is the hidden `access_key` field near the bottom of `docs/index.html`. The `subject` and `from_name` hidden fields control how the notification email reads. The `email` field is required and named so Web3Forms sets it as Reply-To automatically.
 
 **Open items still pending on the live site** (ask if you want the current status on any of these): real testimonials in place of the two examples, real social links in the footer, the exact neighbourhood under each gallery project, and confirming the contact number accepts text messages.
 
